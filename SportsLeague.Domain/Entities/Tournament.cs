@@ -11,5 +11,7 @@ public class Tournament : AuditBase
     public TournamentStatus Status { get; set; } = TournamentStatus.Pending;
 
     // Navigation Properties
+    
     public ICollection<TournamentTeam> TournamentTeams { get; set; } = new List<TournamentTeam>();
+    public ICollection<TournamentSponsor> TournamentSponsors { get; set; } = new List<TournamentSponsor>(); // NUEVO
 }
