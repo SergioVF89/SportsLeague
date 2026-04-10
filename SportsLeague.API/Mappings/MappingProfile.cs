@@ -33,5 +33,18 @@ public class MappingProfile : Profile
                     src.TournamentTeams != null ? src.TournamentTeams.Count : 0));
 
 
+
+        // Sponsor mappings - NUEVO
+        CreateMap<SponsorRequestDTO, Sponsor>();
+        CreateMap<Sponsor, SponsorResponseDTO>();
+
+        // TournamentSponsor mappings - NUEVO
+        CreateMap<TournamentSponsor, TournamentSponsorResponseDTO>() // mapeo de la entidad de vinculación a su DTO de respuesta
+            .ForMember(
+                dest => dest.TournamentName,
+                opt => opt.MapFrom(src => src.Tournament != null ? src.Tournament.Name : string.Empty))
+            .ForMember(
+                dest => dest.SponsorName,
+                opt => opt.MapFrom(src => src.Sponsor != null ? src.Sponsor.Name : string.Empty));
     }
 }
