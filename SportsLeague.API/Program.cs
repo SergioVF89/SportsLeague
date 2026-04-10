@@ -20,16 +20,19 @@ builder.Services.AddDbContext<LeagueDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IRefereeRepository, RefereeRepository>();           // NUEVO
-builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();     // NUEVO
-builder.Services.AddScoped<ITournamentTeamRepository, TournamentTeamRepository>(); // NUEVO
+builder.Services.AddScoped<IRefereeRepository, RefereeRepository>();           
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();     
+builder.Services.AddScoped<ITournamentTeamRepository, TournamentTeamRepository>();
+builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();                    // NUEVO
+builder.Services.AddScoped<ITournamentSponsorRepository, TournamentSponsorRepository>(); // NUEVO
 
 
 // ── Services ──
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<IRefereeService, RefereeService>();           // NUEVO
-builder.Services.AddScoped<ITournamentService, TournamentService>();     // NUEVO
+builder.Services.AddScoped<IRefereeService, RefereeService>();           
+builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<ISponsorService, SponsorService>();                           // NUEVO
 
 
 // ── AutoMapper ──
