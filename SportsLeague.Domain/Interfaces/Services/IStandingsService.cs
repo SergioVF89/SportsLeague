@@ -6,4 +6,4 @@ public interface IStandingsService
     Task<object> GetTopScorersAsync(int tournamentId);
     Task<object> GetCardStatsAsync(int tournamentId);
 }
-
+ 
