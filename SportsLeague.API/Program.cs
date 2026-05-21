@@ -30,6 +30,7 @@ builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<IMatchLineupRepository, MatchLineupRepository>();//NEW
 
 
 
@@ -41,7 +42,8 @@ builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<ISponsorService, SponsorService>();                           // NUEVO
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IMatchEventService, MatchEventService>();
-builder.Services.AddScoped<MatchValidationHelper>();
+builder.Services.AddScoped<MatchValidationHelper>(); // MatchValidationHelper ya está registrado desde la Fase 5
+builder.Services.AddScoped<IMatchLineupService, MatchLineupService>();//NEW
 
 
 // ── AutoMapper ──

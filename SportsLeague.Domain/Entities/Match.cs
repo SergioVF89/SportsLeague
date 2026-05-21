@@ -26,6 +26,12 @@ namespace SportsLeague.Domain.Entities
         public ICollection<Goal> Goals { get; set; } = new List<Goal>();
         public ICollection<Card> Cards { get; set; } = new List<Card>();
 
+        // Agregar dentro de la clase Match, después de Cards:
+
+        // Alineación del partido
+        public ICollection<MatchLineup> MatchLineups { get; set; } = new List<MatchLineup>();
+
+
 
     }
 
