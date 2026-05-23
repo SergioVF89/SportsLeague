@@ -4,5 +4,5 @@ public class CreateMatchLineupDTO
 {
     public int PlayerId { get; set; }
     public bool IsStarter { get; set; }
-    public string Position { get; set; } = string.Empty;
+    public string Position { get; set; } = string.Empty; // GK, CB, CDM, CAM, ST, etc.
 }

@@ -333,19 +333,19 @@ public class LeagueDbContext : DbContext
             entity.Property(ml => ml.UpdatedAt)
                 .IsRequired(false);
 
-            // Relación con Match
+            // Relación con Match (Cascade: si se elimina el partido, se eliminan sus alineaciones)
             entity.HasOne(ml => ml.Match)
-                .WithMany(m => m.MatchLineups)
+                .WithMany(m => m.Lineups)
                 .HasForeignKey(ml => ml.MatchId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Relación con Player
+            // Relación con Player (Restrict: no eliminar jugador si tiene alineaciones)
             entity.HasOne(ml => ml.Player)
                 .WithMany(p => p.MatchLineups)
                 .HasForeignKey(ml => ml.PlayerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Índice único compuesto: un jugador no puede estar dos veces en la misma alineación
+            // Índice único compuesto: un jugador no puede estar dos veces en el mismo partido
             entity.HasIndex(ml => new { ml.MatchId, ml.PlayerId })
                 .IsUnique();
         });

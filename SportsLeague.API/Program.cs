@@ -33,7 +33,6 @@ builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<IMatchLineupRepository, MatchLineupRepository>();//NEW
 
 
-
 // ── Services ──
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();

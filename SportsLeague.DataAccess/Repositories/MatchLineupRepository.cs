@@ -15,9 +15,7 @@ public class MatchLineupRepository : GenericRepository<MatchLineup>, IMatchLineu
     {
         return await _dbSet
             .Where(ml => ml.MatchId == matchId)
-            .Include(ml => ml.Player)
-            .ThenInclude(p => p.Team)
-            .OrderByDescending(ml => ml.IsStarter)
+            .OrderBy(ml => ml.IsStarter ? 0 : 1)
             .ThenBy(ml => ml.Position)
             .ToListAsync();
     }
@@ -25,9 +23,9 @@ public class MatchLineupRepository : GenericRepository<MatchLineup>, IMatchLineu
     public async Task<IEnumerable<MatchLineup>> GetByMatchAndTeamAsync(int matchId, int teamId)
     {
         return await _dbSet
-            .Where(ml => ml.MatchId == matchId && ml.Player.TeamId == teamId)
             .Include(ml => ml.Player)
-            .OrderByDescending(ml => ml.IsStarter)
+            .Where(ml => ml.MatchId == matchId && ml.Player.TeamId == teamId)
+            .OrderBy(ml => ml.IsStarter ? 0 : 1)
             .ThenBy(ml => ml.Position)
             .ToListAsync();
     }
@@ -38,12 +36,27 @@ public class MatchLineupRepository : GenericRepository<MatchLineup>, IMatchLineu
             .FirstOrDefaultAsync(ml => ml.MatchId == matchId && ml.PlayerId == playerId);
     }
 
+    public async Task<bool> ExistsByMatchAndPlayerAsync(int matchId, int playerId)
+    {
+        return await _dbSet.AnyAsync(ml => ml.MatchId == matchId && ml.PlayerId == playerId);
+    }
+
     public async Task<int> CountStartersByMatchAndTeamAsync(int matchId, int teamId)
     {
         return await _dbSet
-            .CountAsync(ml => ml.MatchId == matchId &&
-                              ml.Player.TeamId == teamId &&
-                              ml.IsStarter == true);
+            .Include(ml => ml.Player)
+            .CountAsync(ml => ml.MatchId == matchId && ml.Player.TeamId == teamId && ml.IsStarter);
+    }
+
+    public async Task<IEnumerable<MatchLineup>> GetByMatchWithDetailsAsync(int matchId)
+    {
+        return await _dbSet
+            .Where(ml => ml.MatchId == matchId)
+            .Include(ml => ml.Player)
+                .ThenInclude(p => p.Team)
+            .OrderBy(ml => ml.IsStarter ? 0 : 1)
+            .ThenBy(ml => ml.Position)
+            .ToListAsync();
     }
 }
 

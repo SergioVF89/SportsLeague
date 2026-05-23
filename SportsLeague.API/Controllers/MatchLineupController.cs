@@ -9,14 +9,12 @@ namespace SportsLeague.API.Controllers;
 
 [ApiController]
 [Route("api/match/{matchId}/lineup")]
-public class MatchLineupController : ControllerBase
+public class MatchLineupController : ControllerBase  // ← Hereda de ControllerBase, no de BaseController
 {
     private readonly IMatchLineupService _matchLineupService;
     private readonly IMapper _mapper;
 
-    public MatchLineupController(
-        IMatchLineupService matchLineupService,
-        IMapper mapper)
+    public MatchLineupController(IMatchLineupService matchLineupService, IMapper mapper)
     {
         _matchLineupService = matchLineupService;
         _mapper = mapper;
@@ -24,23 +22,21 @@ public class MatchLineupController : ControllerBase
 
     // POST /api/match/{matchId}/lineup
     [HttpPost]
-    public async Task<ActionResult<MatchLineupResponseDTO>> AddToLineup(
-        int matchId,
-        CreateMatchLineupDTO dto)
+    public async Task<IActionResult> AddToLineup(int matchId, [FromBody] CreateMatchLineupDTO dto)
     {
         try
         {
             var lineup = _mapper.Map<MatchLineup>(dto);
             var created = await _matchLineupService.AddToLineupAsync(matchId, lineup);
 
-            // Recargar para obtener las Navigation Properties (Player, Team)
+            // Recargar con detalles para el response
             var lineups = await _matchLineupService.GetLineupByMatchAsync(matchId);
-            var createdLineup = lineups.FirstOrDefault(l => l.Id == created.Id);
+            var lineupWithDetails = lineups.FirstOrDefault(l => l.Id == created.Id);
 
-            return CreatedAtAction(
-                nameof(GetLineup),
-                new { matchId = matchId },
-                _mapper.Map<MatchLineupResponseDTO>(createdLineup));
+            var responseDto = _mapper.Map<MatchLineupResponseDTO>(lineupWithDetails);
+
+            // Usar CreatedAtAction en lugar de CreatedResponse
+            return CreatedAtAction(nameof(GetLineup), new { matchId = matchId }, responseDto);
         }
         catch (KeyNotFoundException ex)
         {
@@ -54,12 +50,15 @@ public class MatchLineupController : ControllerBase
 
     // GET /api/match/{matchId}/lineup
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MatchLineupResponseDTO>>> GetLineup(int matchId)
+    public async Task<IActionResult> GetLineup(int matchId)
     {
         try
         {
             var lineups = await _matchLineupService.GetLineupByMatchAsync(matchId);
-            return Ok(_mapper.Map<IEnumerable<MatchLineupResponseDTO>>(lineups));
+            var responseDtos = _mapper.Map<IEnumerable<MatchLineupResponseDTO>>(lineups);
+
+            // Usar Ok en lugar de OkResponse
+            return Ok(new { success = true, message = "Alineación obtenida exitosamente", data = responseDtos });
         }
         catch (KeyNotFoundException ex)
         {
@@ -69,14 +68,14 @@ public class MatchLineupController : ControllerBase
 
     // GET /api/match/{matchId}/lineup/team/{teamId}
     [HttpGet("team/{teamId}")]
-    public async Task<ActionResult<IEnumerable<MatchLineupResponseDTO>>> GetLineupByTeam(
-        int matchId,
-        int teamId)
+    public async Task<IActionResult> GetLineupByTeam(int matchId, int teamId)
     {
         try
         {
             var lineups = await _matchLineupService.GetLineupByMatchAndTeamAsync(matchId, teamId);
-            return Ok(_mapper.Map<IEnumerable<MatchLineupResponseDTO>>(lineups));
+            var responseDtos = _mapper.Map<IEnumerable<MatchLineupResponseDTO>>(lineups);
+
+            return Ok(new { success = true, message = "Alineación del equipo obtenida exitosamente", data = responseDtos });
         }
         catch (KeyNotFoundException ex)
         {
@@ -84,17 +83,19 @@ public class MatchLineupController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return Conflict(new { message = ex.Message });
         }
     }
 
-    // DELETE /api/match/{matchId}/lineup/{lineupId}
-    [HttpDelete("{lineupId}")]
-    public async Task<ActionResult> DeleteFromLineup(int matchId, int lineupId)
+    // DELETE /api/match/{matchId}/lineup/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteFromLineup(int matchId, int id)
     {
         try
         {
-            await _matchLineupService.DeleteFromLineupAsync(lineupId);
+            await _matchLineupService.DeleteFromLineupAsync(id);
+
+            // Usar NoContent en lugar de NoContentResponse
             return NoContent();
         }
         catch (KeyNotFoundException ex)

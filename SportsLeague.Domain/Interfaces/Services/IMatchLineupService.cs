@@ -7,6 +7,5 @@ public interface IMatchLineupService
     Task<MatchLineup> AddToLineupAsync(int matchId, MatchLineup lineup);
     Task<IEnumerable<MatchLineup>> GetLineupByMatchAsync(int matchId);
     Task<IEnumerable<MatchLineup>> GetLineupByMatchAndTeamAsync(int matchId, int teamId);
-    Task DeleteFromLineupAsync(int lineupId);
+    Task DeleteFromLineupAsync(int id);
 }
-

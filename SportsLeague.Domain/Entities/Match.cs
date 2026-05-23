@@ -29,7 +29,7 @@ namespace SportsLeague.Domain.Entities
         // Agregar dentro de la clase Match, después de Cards:
 
         // Alineación del partido
-        public ICollection<MatchLineup> MatchLineups { get; set; } = new List<MatchLineup>();
+        public ICollection<MatchLineup> Lineups { get; set; } = new List<MatchLineup>();
 
 
 
